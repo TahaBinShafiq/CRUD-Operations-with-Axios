@@ -12,7 +12,13 @@ const deleteProductData = async (id) =>{
     return response
 }
 
+const addPost = async(data) => {
+    const response = await axios.post('https://smit-backend-crud.vercel.app/api/items',data)
+    return response
+} 
+
 export{
     getproductData,
-    deleteProductData
+    deleteProductData, 
+    addPost
 }

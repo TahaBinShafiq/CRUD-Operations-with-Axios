@@ -1,55 +1,115 @@
 "use client";
-import { deleteProductData, getproductData } from "@/app/services" 
+import { addPost, deleteProductData, getproductData } from "@/app/services"
 import { RippleButton } from "@/components/ui/ripple-button";
 import { useEffect, useState } from "react"
-
-
 
 
 function DashboardPartial() {
     const [productData, setProductData] = useState([])
 
+    const [addUserData, setAddUserData] = useState({
+        name: '',
+        description: ''
+    })
+
+
+    const addData = async () => {
+        if (!addUserData.name || !addUserData.description) return
+        setProductData([...productData, addUserData])
+
+        const newPost = await addPost(addUserData)
+
+        setAddUserData({
+            name: '',
+            description: ''
+        })
+        console.log("add")
+        console.log(productData)
+    }
+
+
     const getData = async () => {
         const data = await getproductData()
         setProductData(data)
-        console.log(data)
+
     }
+
 
     useEffect(() => {
         getData()
     }, [])
+    console.log(addUserData)
 
 
-    const deleteProduct = (id) =>{
-        const deleteData = deleteProductData(id)
+    const deleteProduct = async (id) => {
+        console.log(id)
+        const deleteData = await deleteProductData(id)
         setProductData(deleteData)
-        getData()
+        await getData()
     }
-
-    console.log(productData)
 
 
 
 
     return <section>
-        <h1 className="text-[35px]">DashBoard</h1>
-        <div className="flex w-full gap-[15px]">
-            {productData.map((product) => {
-                const { name, description , id } = product
+
+        <div className="lg:w-[800px] mx-auto mt-[20px] p-4 sm:p-6 md:p-5 bg-white rounded-2xl shadow-lg space-y-4 sm: w-[90%]">
+            <h2 className="text-xl font-semibold text-center">Add Details</h2>
+
+
+            {/* Name Input */}
+            <div className="lg:flex flex-row w-full justify-start gap-[15px] sm:flex flex-col gap[40px]">
+
+                <div className="flex flex-col w-full space-y-1">
+                    <label className="text-sm font-medium">Name</label>
+                    <input
+                        type="text"
+                        placeholder="Enter name"
+                        value={addUserData.name}
+                        onChange={(event) => setAddUserData({ ...addUserData, name: event.target.value })}
+                        className="border rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+
+                {/* Description Input */}
+                <div className="flex flex-col space-y-1 w-full" >
+                    <label className="text-sm font-medium">Description</label>
+                    <input
+                        type="text"
+                        placeholder="Enter description"
+                        value={addUserData.description}
+                        onChange={(event) => setAddUserData({ ...addUserData, description: event.target.value })}
+                        className="border rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <button
+                    onClick={addData}
+                    className="lg:w-[150px] h-[47px] mt-[20px] cursor-pointer bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition-all duration-200 md:w-[150px] sm: w-full">
+                    Add
+                </button>
+
+            </div>
+
+        </div>
+
+        <div className="flex max-w-[1250px] mx-[auto] justify-center mt-[20px] px-1.5 gap-[10px] flex-wrap">
+            {productData.length > 0 && productData.map((product) => {
+                const { name, description, id } = product
                 return (
-                    <div key={id} className="max-w-[400px] min-w-[300px] bg-black shadow-lg rounded-2xl p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-                        <h2 className="text-2xl font-semibold text-white mb-2">
+                    <div key={id} className="min-w-[280px] max-w-[300px] bg-white shadow-lg rounded-2xl p-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                        <h2 className="text-2xl font-semibold text-black mb-2">
                             {name}
                         </h2>
-                        <p className="text-white mb-4">
-                           {description}
+                        <p className="text-gray mb-4">
+                            {description}
                         </p>
 
                         <div className="flex justify-end gap-3">
-                          <RippleButton rippleColor="#ADD8E6" >Edit</RippleButton>
-                            <button onClick={() =>{
+                            <RippleButton rippleColor="#ADD8E6">Edit</RippleButton>
+                            <button onClick={() => {
                                 deleteProduct(id)
-                            }} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                            }} className="px-4 py-2 cursor-pointer bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
                                 Delete
                             </button>
                         </div>
