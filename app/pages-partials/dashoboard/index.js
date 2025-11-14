@@ -12,9 +12,28 @@ function DashboardPartial() {
         description: ''
     })
 
+    const [editId, setEditId] = useState(null)
+    const [editUserData , setEditUserData] = useState({
+        editName : '',
+        editDis : ''
+    })
+
+
+    const editData = ({id:editId , name:editName , description:editDis}) => {
+        setEditId(editId)
+        setEditUserData({
+            editName: editName,
+            editDis : editDis
+        })
+        console.log(editId)
+        console.log(editName)
+        console.log(editDis)
+    }
+
 
     const addData = async () => {
         if (!addUserData.name || !addUserData.description) return
+
         setProductData([...productData, addUserData])
 
         const newPost = await addPost(addUserData)
@@ -65,8 +84,10 @@ function DashboardPartial() {
                     <input
                         type="text"
                         placeholder="Enter name"
-                        value={addUserData.name}
-                        onChange={(event) => setAddUserData({ ...addUserData, name: event.target.value })}
+                        value={editId === null ? addUserData.name : editUserData.editName}
+                        onChange={editId === null ?(event) => setAddUserData({ ...addUserData, name: event.target.value })  :
+                        (event) => setEditUserData({ ...editUserData, editName: event.target.value })
+                    }
                         className="border rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
@@ -86,7 +107,7 @@ function DashboardPartial() {
                 <button
                     onClick={addData}
                     className="lg:w-[150px] h-[47px] mt-[20px] cursor-pointer bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition-all duration-200 md:w-[150px] sm: w-full">
-                    Add
+                    {editId === null ? "Add" : "Edit"}
                 </button>
 
             </div>
@@ -106,7 +127,9 @@ function DashboardPartial() {
                         </p>
 
                         <div className="flex justify-end gap-3">
-                            <RippleButton rippleColor="#ADD8E6">Edit</RippleButton>
+                            <RippleButton rippleColor="#ADD8E6" onClick={() => {
+                                editData(product)
+                            }}>Edit</RippleButton>
                             <button onClick={() => {
                                 deleteProduct(id)
                             }} className="px-4 py-2 cursor-pointer bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
