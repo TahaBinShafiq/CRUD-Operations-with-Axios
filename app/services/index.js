@@ -1,3 +1,5 @@
+import { AwardIcon } from "lucide-react"
+
 const { default: axios } = require("axios")
 
 const getproductData = async() =>{
@@ -17,8 +19,15 @@ const addPost = async(data) => {
     return response
 } 
 
+const updatePost = async(id , data) => {
+    console.log(id)
+    const response = await axios.patch(`https://smit-backend-crud.vercel.app/api/items/${id}`,data)
+    return response
+}
+
 export{
     getproductData,
     deleteProductData, 
-    addPost
+    addPost,
+    updatePost
 }

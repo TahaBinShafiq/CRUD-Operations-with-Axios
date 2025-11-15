@@ -1,11 +1,12 @@
 "use client";
-import { addPost, deleteProductData, getproductData } from "@/app/services"
+import { addPost, deleteProductData, getproductData, updatePost } from "@/app/services"
 import { RippleButton } from "@/components/ui/ripple-button";
 import { useEffect, useState } from "react"
 
 
 function DashboardPartial() {
     const [productData, setProductData] = useState([])
+    const [emptyInput, setEmptyInput] = useState(false)
 
     const [addUserData, setAddUserData] = useState({
         name: '',
@@ -13,30 +14,51 @@ function DashboardPartial() {
     })
 
     const [editId, setEditId] = useState(null)
-    const [editUserData , setEditUserData] = useState({
-        editName : '',
-        editDis : ''
+    const [editUserData, setEditUserData] = useState({
+        name: '',
+        description: ''
     })
 
 
-    const editData = ({id:editId , name:editName , description:editDis}) => {
+
+    const editData = ({ id: editId, name: editName, description: editDis }) => {
         setEditId(editId)
         setEditUserData({
-            editName: editName,
-            editDis : editDis
+            name: editName,
+            description: editDis
         })
         console.log(editId)
         console.log(editName)
         console.log(editDis)
     }
+    console.log(editId)
+
+    const submitEditData = async (editId) => {
+        if (!editUserData.name || !editUserData) {
+            alert("Enter Data")
+            return
+        }
+        console.log(editId)
+        const update = await updatePost(editId, editUserData)
+        setEditUserData({ name: "", description: "" })
+        setEditId(null)
+        await getData()
+    }
 
 
     const addData = async () => {
-        if (!addUserData.name || !addUserData.description) return
+        if (!addUserData.name || !addUserData.description) {
+            setEmptyInput(true);
+            return;
+        }
 
-        setProductData([...productData, addUserData])
+        setEmptyInput(false)
 
         const newPost = await addPost(addUserData)
+        const { data: newData } = newPost
+        const { data } = newData
+        console.log(data.id)
+        setProductData([...productData, data])
 
         setAddUserData({
             name: '',
@@ -71,9 +93,12 @@ function DashboardPartial() {
 
 
     return <section>
+        <div>
+            <h1 className="text-[30px] font-bold text-center">CRUD Operations Using Axios</h1>
+        </div>
 
         <div className="lg:w-[800px] mx-auto mt-[20px] p-4 sm:p-6 md:p-5 bg-white rounded-2xl shadow-lg space-y-4 sm: w-[90%]">
-            <h2 className="text-xl font-semibold text-center">Add Details</h2>
+            <h2 className="text-xl font-semibold text-center">{editId === null ? "Add Details" : "Edit Details"}</h2>
 
 
             {/* Name Input */}
@@ -84,11 +109,14 @@ function DashboardPartial() {
                     <input
                         type="text"
                         placeholder="Enter name"
-                        value={editId === null ? addUserData.name : editUserData.editName}
-                        onChange={editId === null ?(event) => setAddUserData({ ...addUserData, name: event.target.value })  :
-                        (event) => setEditUserData({ ...editUserData, editName: event.target.value })
-                    }
-                        className="border rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={editId === null ? addUserData.name : editUserData.name}
+                        onChange={editId === null ? (event) => setAddUserData({ ...addUserData, name: event.target.value }) :
+                            (event) => setEditUserData({ ...editUserData, name: event.target.value })
+                        }
+                        className={emptyInput && !addUserData.name
+                            ? "border border-red-500 rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            : "border rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        }
                     />
                 </div>
 
@@ -99,15 +127,20 @@ function DashboardPartial() {
                     <input
                         type="text"
                         placeholder="Enter description"
-                        value={addUserData.description}
-                        onChange={(event) => setAddUserData({ ...addUserData, description: event.target.value })}
-                        className="border rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={editId === null ? addUserData.description : editUserData.description}
+                        onChange={editId === null ? (event) => setAddUserData({ ...addUserData, description: event.target.value }) :
+                            (event) => { setEditUserData({ ...editUserData, description: event.target.value }) }
+                        }
+                        className={emptyInput && !addUserData.name
+                            ? "border border-red-500 rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            : "border rounded-[5px] p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        }
                     />
                 </div>
                 <button
-                    onClick={addData}
+                    onClick={editId === null ? addData : () => { submitEditData(editId) }}
                     className="lg:w-[150px] h-[47px] mt-[20px] cursor-pointer bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition-all duration-200 md:w-[150px] sm: w-full">
-                    {editId === null ? "Add" : "Edit"}
+                    {editId === null ? "Add" : "Update"}
                 </button>
 
             </div>
