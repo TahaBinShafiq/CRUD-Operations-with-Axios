@@ -146,12 +146,13 @@ function DashboardPartial() {
             </div>
 
         </div>
-
-        <div className="flex max-w-[1250px] mx-[auto] justify-center mt-[20px] px-1.5 gap-[10px] flex-wrap">
+        
+        <div className="mx-w-[1250px] mx-auto p-4">
+        <div className="flex flex-wrap justify-start gap-4" >
             {productData.length > 0 && productData.map((product) => {
                 const { name, description, id } = product
                 return (
-                    <div key={id} className="min-w-[280px] max-w-[300px] bg-white shadow-lg rounded-2xl p-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                    <div key={id} className="w-full bg-white shadow-lg rounded-2xl p-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300 sm:max-w-[300px] lg:min-w-[270px] lg:max-w-[300px] ">
                         <h2 className="text-2xl font-semibold text-black mb-2">
                             {name}
                         </h2>
@@ -172,6 +173,7 @@ function DashboardPartial() {
                     </div>
                 )
             })}
+        </div>
         </div>
 
     </section>
