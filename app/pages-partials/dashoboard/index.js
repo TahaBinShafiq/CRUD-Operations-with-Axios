@@ -48,8 +48,8 @@ function DashboardPartial() {
   });
 
   const mutationEdit = useMutation({
-      mutationFn: (data) => updatePost(editId, data),
-      onSuccess: () => {
+    mutationFn: (data) => updatePost(editId, data),
+    onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["fetchData"] });
     },
@@ -61,7 +61,7 @@ function DashboardPartial() {
     <section>
       <div>
         <h1 className="text-[30px] font-bold text-center">
-          CRUD Operations Using Axios
+           CRUD Operations Using Axios + TanStack Query
         </h1>
       </div>
 
@@ -157,7 +157,13 @@ function DashboardPartial() {
             }}
             className="lg:w-[150px] h-[47px] mt-[20px] cursor-pointer bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition-all duration-200 md:w-[150px] sm: w-full"
           >
-            {editId === null ? "Add" : mutationAdd.isPending ? "Adding..." : mutationEdit.isPending ? "updating..." : "Update"}
+            {mutationAdd.isPending
+              ? "Adding..."
+              : mutationEdit.isPending
+              ? "Updating..."
+              : editId === null
+              ? "Add"
+              : "Update"}
           </button>
         </div>
       </div>
