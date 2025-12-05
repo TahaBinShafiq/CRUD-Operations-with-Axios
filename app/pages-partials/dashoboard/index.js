@@ -7,7 +7,7 @@ import {
 } from "@/app/services";
 import { RippleButton } from "@/components/ui/ripple-button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function DashboardPartial() {
   const [emptyInput, setEmptyInput] = useState(false);
@@ -61,7 +61,7 @@ function DashboardPartial() {
     <section>
       <div>
         <h1 className="text-[30px] font-bold text-center">
-           CRUD Operations Using Axios + TanStack Query
+          CRUD Operations Using Axios + TanStack Query
         </h1>
       </div>
 
