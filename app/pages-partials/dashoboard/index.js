@@ -60,7 +60,7 @@ function DashboardPartial() {
   return (
     <section>
       <div>
-        <h1 className="text-[30px] font-bold text-center">
+        <h1 className="text-[30px] font-bold text-center p-[20px]">
           CRUD Operations Using Axios + TanStack Query
         </h1>
       </div>
